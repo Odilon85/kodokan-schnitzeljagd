@@ -710,7 +710,7 @@ function attachFooter(){
     ${state.view !== "setup" ? `<button class="leader-toggle" id="global-reset-btn">🔄 Team/Nummer zurücksetzen</button>` : ""}
   `;
   app.appendChild(footer);
-  document.getElementById("leader-toggle").onclick = showLeaderSheet;
+  document.getElementById("leader-toggle").onclick = showLeaderGate;
 
   const globalResetBtn = document.getElementById("global-reset-btn");
   if (globalResetBtn) globalResetBtn.onclick = () => {
@@ -720,6 +720,39 @@ function attachFooter(){
 
   const resetBtn = document.getElementById("reset-btn");
   if (resetBtn) resetBtn.onclick = () => resetApp();
+}
+
+const LEADER_PASSWORD = "1982";
+
+function showLeaderGate(){
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <header>
+      <img src="${LOGO_DATA_URI}" class="flame-logo" alt="Kodokan Olsberg Logo">
+      <h1>Betreuer-Bereich</h1>
+      <p class="subtitle">Nur für Betreuer — bitte Passwort eingeben</p>
+    </header>
+    <div class="panel">
+      <input type="password" id="leader-password-input" placeholder="Passwort" inputmode="numeric">
+      <button class="btn" id="leader-password-submit" style="margin-top:12px;">Entsperren</button>
+      <div class="feedback err" id="leader-password-feedback"></div>
+      <button class="btn secondary" id="leader-gate-back" style="margin-top:12px;">Zurück</button>
+    </div>
+  `;
+  const submit = () => {
+    const val = document.getElementById("leader-password-input").value;
+    if (val === LEADER_PASSWORD) {
+      showLeaderSheet();
+    } else {
+      const fb = document.getElementById("leader-password-feedback");
+      fb.textContent = "Falsches Passwort.";
+      document.getElementById("leader-password-input").value = "";
+      document.getElementById("leader-password-input").focus();
+    }
+  };
+  document.getElementById("leader-password-submit").onclick = submit;
+  document.getElementById("leader-password-input").addEventListener("keydown", e => { if (e.key === "Enter") submit(); });
+  document.getElementById("leader-gate-back").onclick = () => render();
 }
 
 function showLeaderSheet(){
