@@ -694,21 +694,32 @@ function renderFinal(){
   `;
 }
 
+function resetApp(){
+  localStorage.removeItem("feuer_team");
+  localStorage.removeItem("feuer_team_number");
+  localStorage.removeItem("feuer_progress");
+  state = { team: "", teamNumber: 0, progress: {}, view: "setup", currentStation: null, stepIndex: 1, wrongTries: 0 };
+  render();
+}
+
 function attachFooter(){
   const app = document.getElementById("app");
   const footer = document.createElement("footer");
-  footer.innerHTML = `<button class="leader-toggle" id="leader-toggle">Für Betreuer: Vorbereitung &amp; Lösungen</button>`;
+  footer.innerHTML = `
+    <button class="leader-toggle" id="leader-toggle">Für Betreuer: Vorbereitung &amp; Lösungen</button>
+    ${state.view !== "setup" ? `<button class="leader-toggle" id="global-reset-btn">🔄 Team/Nummer zurücksetzen</button>` : ""}
+  `;
   app.appendChild(footer);
   document.getElementById("leader-toggle").onclick = showLeaderSheet;
 
-  const resetBtn = document.getElementById("reset-btn");
-  if (resetBtn) resetBtn.onclick = () => {
-    localStorage.removeItem("feuer_team");
-    localStorage.removeItem("feuer_team_number");
-    localStorage.removeItem("feuer_progress");
-    state = { team: "", teamNumber: 0, progress: {}, view: "setup", currentStation: null, stepIndex: 1, wrongTries: 0 };
-    render();
+  const globalResetBtn = document.getElementById("global-reset-btn");
+  if (globalResetBtn) globalResetBtn.onclick = () => {
+    const ok = confirm("Team und gesamten Fortschritt auf diesem Gerät wirklich zurücksetzen? Das kann nicht rückgängig gemacht werden.");
+    if (ok) resetApp();
   };
+
+  const resetBtn = document.getElementById("reset-btn");
+  if (resetBtn) resetBtn.onclick = () => resetApp();
 }
 
 function showLeaderSheet(){
