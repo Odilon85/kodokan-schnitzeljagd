@@ -501,29 +501,42 @@ function attachArrival(){
   const manualBtn = document.getElementById("manual-arrive-btn");
   if (manualBtn) manualBtn.onclick = () => confirmArrival();
 
-  if (st.lat && st.lng && navigator.geolocation) {
-    geoWatchId = navigator.geolocation.watchPosition(
-      pos => {
-        const dist = Math.round(haversineMeters(pos.coords.latitude, pos.coords.longitude, st.lat, st.lng));
-        const info = document.getElementById("distance-info");
-        if (info) {
-          if (dist <= st.radius) {
-            info.textContent = "✅ Ihr seid da! Das Rätsel startet gleich…";
-            info.style.color = "var(--ok)";
-            setTimeout(() => confirmArrival(), 900);
-          } else {
-            info.textContent = `📍 Noch ca. ${dist} m bis zur Station.`;
-            info.style.color = "var(--cream-dim)";
-          }
-        }
-      },
-      err => {
-        const info = document.getElementById("distance-info");
-        if (info) info.textContent = "Standort konnte nicht ermittelt werden — bestätigt manuell, sobald ihr da seid.";
-      },
-      { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
-    );
+  if (!(st.lat && st.lng)) return;
+
+  if (!navigator.geolocation) {
+    const info = document.getElementById("distance-info");
+    if (info) info.textContent = "Dieser Browser unterstützt keine Standortermittlung — bitte manuell bestätigen.";
+    return;
   }
+
+  geoWatchId = navigator.geolocation.watchPosition(
+    pos => {
+      const dist = Math.round(haversineMeters(pos.coords.latitude, pos.coords.longitude, st.lat, st.lng));
+      const info = document.getElementById("distance-info");
+      if (info) {
+        if (dist <= st.radius) {
+          info.textContent = "✅ Ihr seid da! Das Rätsel startet gleich…";
+          info.style.color = "var(--ok)";
+          setTimeout(() => confirmArrival(), 900);
+        } else {
+          info.textContent = `📍 Noch ca. ${dist} m bis zur Station.`;
+          info.style.color = "var(--cream-dim)";
+        }
+      }
+    },
+    err => {
+      const info = document.getElementById("distance-info");
+      if (!info) return;
+      if (err.code === 1) {
+        info.textContent = "Standortzugriff wurde nicht erlaubt. In den Handy-Einstellungen für diese Seite/Safari den Standortzugriff erlauben, dann Seite neu laden — oder einfach manuell bestätigen.";
+      } else if (err.code === 3) {
+        info.textContent = "GPS-Signal braucht noch etwas — geht an einen Ort mit freier Sicht zum Himmel, oder bestätigt manuell.";
+      } else {
+        info.textContent = "Standort konnte nicht ermittelt werden — bestätigt manuell, sobald ihr da seid.";
+      }
+    },
+    { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+  );
 }
 
 function confirmArrival(){
