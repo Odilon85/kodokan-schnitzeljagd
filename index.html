@@ -324,11 +324,21 @@ function stopGeoWatch(){
   }
 }
 
+function isIOS(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
 function mapsUrl(st){
+  const ios = isIOS();
   if (st.lat && st.lng) {
-    return `https://www.google.com/maps/dir/?api=1&destination=${st.lat},${st.lng}&travelmode=walking`;
+    return ios
+      ? `https://maps.apple.com/?daddr=${st.lat},${st.lng}&dirflg=w`
+      : `https://www.google.com/maps/dir/?api=1&destination=${st.lat},${st.lng}&travelmode=walking`;
   }
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(st.mapsQuery || st.name)}`;
+  const query = st.mapsQuery || st.name;
+  return ios
+    ? `https://maps.apple.com/?q=${encodeURIComponent(query)}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
 // ---- Challenge-Timer ----
@@ -474,7 +484,7 @@ function renderArrival(){
     <div class="panel">
       <div class="step-label">Navigation</div>
       <p class="riddle-text">Auf zu Station ${routePos} ❓. Navigiert dorthin und startet dann das erste Rätsel.</p>
-      <a class="btn" href="${mapsUrl(st)}" target="_blank" rel="noopener" style="text-decoration:none; display:block; text-align:center;">📍 In Google Maps navigieren</a>
+      <a class="btn" href="${mapsUrl(st)}" target="_blank" rel="noopener" style="text-decoration:none; display:block; text-align:center;">📍 In ${isIOS() ? 'Apple Maps' : 'Google Maps'} navigieren</a>
       <div id="distance-info" style="margin-top:16px; text-align:center; color:var(--cream-dim); font-size:14px;">
         ${hasCoords ? 'Standort wird ermittelt…' : 'Automatische Ankunftserkennung ist für diese Station noch nicht eingerichtet.'}
       </div>
