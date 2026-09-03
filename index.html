@@ -245,12 +245,12 @@ const STATIONS = [
     letter: "O",
     lat: 51.558621, lng: 7.901115, radius: 30,
     mapsQuery: "Vereinsheim Sportzentrum Werl",
-    hideA: "Kärtchen mit der Zahl 150 neben der Eingangstür des Vereinsheims befestigen, z. B. am Klingelschild.",
-    box: "Kleine Kiste mit 5-stelligem Zahlenschloss am Vereinsheim bereitstellen. Schloss auf Code 23150 einstellen. Inhalt: Buchstabenkärtchen „O“ (+ optional Süßigkeit).",
+    hideA: "Kärtchen mit der Zahl 50 neben der Eingangstür des Vereinsheims befestigen, z. B. am Klingelschild.",
+    box: "Kleine Kiste mit Zahlenschloss am Vereinsheim bereitstellen. Schloss auf Code 2350 einstellen. Inhalt: Buchstabenkärtchen „O“ (+ optional Süßigkeit).",
     steps: [
-      { type: "find", text: "Wo man sich nach dem Training aufwärmt und der Kaffee schon duftet, hängt neben der Tür ein Schild mit einer Zahl.", answer: "150", hint: "Schaut euch den Eingangsbereich des Vereinsheims genau an, z. B. neben der Tür oder am Klingelschild." },
+      { type: "find", text: "Wo man sich nach dem Training aufwärmt und der Kaffee schon duftet, hängt neben der Tür ein Schild mit einer Zahl.", answer: "50", hint: "Schaut euch den Eingangsbereich des Vereinsheims genau an, z. B. neben der Tür oder am Klingelschild." },
       { type: "riddle", text: "Vor euch liegen 4 bunte Teller mit Bällen und 3 farbige Stoffbänder. Rot: 6 Bälle, Gelb: 9 Bälle, Grün: 8 Bälle, Blau: 7 Bälle. Nur die Teller, zu deren Farbe es auch ein passendes Stoffband gibt, zählen mit. Wie viele Bälle zählen zusammen?", answer: "23", hint: "Es gibt vier Teller, aber nur drei Bänder. Ein Teller hat keine passende Farbe und zählt nicht mit." },
-      { type: "combine", text: "Stellt eure beiden Zahlen hintereinander — zuerst die kleinere, dann die größere. So entsteht der fünfstellige Code für das Schloss.", answer: "23150", hint: "23 ist kleiner als 150. Schreibt also erst 23, dann 150 dahinter." }
+      { type: "combine", text: "Stellt eure beiden Zahlen hintereinander — zuerst die kleinere, dann die größere. So entsteht der vierstellige Code für das Schloss.", answer: "2350", hint: "23 ist kleiner als 50. Schreibt also erst 23, dann 50 dahinter." }
     ]
   },
   {
@@ -555,7 +555,8 @@ function renderStation(){
   const idx = state.stepIndex;
   const totalInputSteps = st.steps.length;
   const actionIdx = totalInputSteps + 1;
-  const revealIdx = totalInputSteps + 2;
+  const letterCheckIdx = totalInputSteps + 2;
+  const revealIdx = totalInputSteps + 3;
   let body = "";
 
   if (idx >= 1 && idx <= totalInputSteps) {
@@ -588,6 +589,15 @@ function renderStation(){
         <button class="btn" id="confirm-btn">Kiste geöffnet ✓</button>
       `;
     }
+  } else if (idx === letterCheckIdx) {
+    body = `
+      <div class="step-label">Buchstabe bestätigen</div>
+      <p class="riddle-text">Welchen Buchstaben habt ihr auf dem Kärtchen in der Kiste gefunden?</p>
+      <input type="text" id="letter-input" placeholder="Buchstabe eingeben" maxlength="1" style="text-transform:uppercase;">
+      <button class="btn" id="letter-check-btn">Prüfen</button>
+      <div class="feedback" id="feedback"></div>
+      ${state.wrongTries >= 2 ? `<div class="hint-box">💡 Der Buchstabe ist einer der fünf Buchstaben im Wort IPPON.</div>` : ""}
+    `;
   } else if (idx === revealIdx) {
     body = `
       <div class="letter-reveal">
@@ -651,12 +661,43 @@ function attachStation(){
 
   const confirmBtn = document.getElementById("confirm-btn");
   if (confirmBtn) confirmBtn.onclick = () => {
-    const revealIdx = state.currentStation.steps.length + 2;
-    state.stepIndex = revealIdx;
-    state.progress[state.currentStation.id] = { done: false, stepIndex: revealIdx };
+    const letterCheckIdx = state.currentStation.steps.length + 2;
+    state.stepIndex = letterCheckIdx;
+    state.wrongTries = 0;
+    state.progress[state.currentStation.id] = { done: false, stepIndex: letterCheckIdx };
     save();
     render();
   };
+
+  const letterCheckBtn = document.getElementById("letter-check-btn");
+  if (letterCheckBtn) {
+    const doLetterCheck = () => {
+      const input = document.getElementById("letter-input");
+      const val = normalize(input.value);
+      const fb = document.getElementById("feedback");
+      if (val === normalize(state.currentStation.letter)) {
+        fb.textContent = "Richtig! Weiter geht's.";
+        fb.className = "feedback ok";
+        state.wrongTries = 0;
+        setTimeout(() => {
+          const revealIdx = state.currentStation.steps.length + 3;
+          state.stepIndex = revealIdx;
+          state.progress[state.currentStation.id] = { done: false, stepIndex: revealIdx };
+          save();
+          render();
+        }, 500);
+      } else {
+        state.wrongTries += 1;
+        fb.textContent = "Nicht ganz — schaut nochmal genau auf das Kärtchen!";
+        fb.className = "feedback err";
+        input.classList.add("shake");
+        setTimeout(() => input.classList.remove("shake"), 350);
+        if (state.wrongTries >= 2) render();
+      }
+    };
+    letterCheckBtn.onclick = doLetterCheck;
+    document.getElementById("letter-input").addEventListener("keydown", e => { if (e.key === "Enter") doLetterCheck(); });
+  }
 
   const timerStartBtn = document.getElementById("timer-start-btn");
   if (timerStartBtn) {
