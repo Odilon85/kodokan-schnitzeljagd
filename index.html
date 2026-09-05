@@ -197,8 +197,8 @@
 const STATIONS = [
   {
     id: "beachvolleyballfeld",
-    icon: "🏐",
-    name: "Beachvolleyballfeld",
+    icon: "🌳",
+    name: "Wald",
     letter: "I",
     lat: 51.55814, lng: 7.89937, radius: 35,
     mapsQuery: "Waldweg am Sportzentrum Werl",
@@ -251,7 +251,7 @@ const STATIONS = [
     box: "Kleine Kiste mit Zahlenschloss in der Nähe des Zeltes des Lieblingstrainers/der Lieblingstrainerin verstecken (nicht direkt am Vereinsheim). Schloss auf Code 2350 einstellen. Inhalt: Buchstabenkärtchen „O“ (+ optional Süßigkeit).",
     steps: [
       { type: "find", text: "Wo Schweiß zu Stolz wird und Müdigkeit sich in ein Lächeln verwandelt, liegt eine Schwelle, die täglich viele Male überquert wird. Neben ihr, dort wo ein Knopf die Stille durchbricht, wartet eine Zahl.", answer: "50", hint: "Schaut euch den Eingangsbereich des Vereinsheims genau an, z. B. neben der Tür oder am Klingelschild." },
-      { type: "riddle", text: "Vor euch liegen 4 bunte Teller mit Bällen und 3 farbige Stoffbänder. Rot: 6 Bälle, Gelb: 9 Bälle, Grün: 8 Bälle, Blau: 7 Bälle. Nur die Teller, zu deren Farbe es auch ein passendes Stoffband gibt, zählen mit. Wie viele Bälle zählen zusammen?", answer: "23", hint: "Es gibt vier Teller, aber nur drei Bänder. Ein Teller hat keine passende Farbe und zählt nicht mit." },
+      { type: "riddle", text: "Vor euch liegen 4 bunte Teller mit Bällen und 3 farbige Stoffbänder. Rot: 6 Bälle, Gelb: 9 Bälle, Grün: 8 Bälle, Blau: 7 Bälle. Wie viele Bälle zählen zusammen?", answer: "23", hint: null },
       { type: "combine", text: "Stellt eure beiden Zahlen hintereinander — zuerst die kleinere, dann die größere. So entsteht der vierstellige Code für das Schloss.", answer: "2350", hint: "23 ist kleiner als 50. Schreibt also erst 23, dann 50 dahinter." },
       { type: "info", text: "Wer euch das Fallen lehrt, damit ihr immer wieder sicher aufsteht, hat irgendwo auf diesem Gelände sein Zelt aufgeschlagen. Findet das Zelt eures Lieblingstrainers oder eurer Lieblingstrainerin — ganz in der Nähe wartet die Kiste mit dem Zahlenschloss auf euch." }
     ]
@@ -289,6 +289,7 @@ let state = {
   team: localStorage.getItem("feuer_team") || "",
   teamNumber: parseInt(localStorage.getItem("feuer_team_number") || "0", 10),
   progress: JSON.parse(localStorage.getItem("feuer_progress") || "{}"),
+  startTime: parseInt(localStorage.getItem("feuer_start_time") || "0", 10) || null,
   view: "setup",
   currentStation: null,
   stepIndex: 1,
@@ -301,6 +302,14 @@ function save(){
   localStorage.setItem("feuer_team", state.team);
   localStorage.setItem("feuer_team_number", String(state.teamNumber));
   localStorage.setItem("feuer_progress", JSON.stringify(state.progress));
+  if (state.startTime) localStorage.setItem("feuer_start_time", String(state.startTime));
+}
+
+function formatDuration(ms){
+  const totalSeconds = Math.round(ms / 1000);
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${m}:${s < 10 ? '0' : ''}${s}`;
 }
 
 function getRoute(){
@@ -370,6 +379,7 @@ function render(){
   stopTimer();
   const app = document.getElementById("app");
   if (state.view === "setup") { app.innerHTML = renderSetup(); attachSetup(); attachFooter(); return; }
+  if (state.view === "wordcheck") { app.innerHTML = renderWordCheck(); attachWordCheck(); attachFooter(); return; }
   if (state.view === "final") { app.innerHTML = renderFinal(); attachFooter(); return; }
   if (state.view === "arrival") { app.innerHTML = renderArrival(); attachArrival(); attachFooter(); return; }
   if (state.view === "station") { app.innerHTML = renderStation(); attachStation(); attachFooter(); return; }
@@ -377,7 +387,7 @@ function render(){
 }
 
 function renderHeader(){
-  const filled = STATIONS.map(s => state.progress[s.id]?.done ? s.letter : "_");
+  const filled = STATIONS.map(s => state.progress[s.id]?.done);
   return `
     <header>
       <img src="${LOGO_DATA_URI}" class="flame-logo" alt="Kodokan Olsberg Logo">
@@ -385,7 +395,7 @@ function renderHeader(){
       <p class="subtitle">Sammelt an jeder Station einen Buchstaben</p>
     </header>
     <div class="word-track">
-      ${filled.map(l => `<div class="letter-slot ${l !== '_' ? 'filled' : ''}">${l !== '_' ? l : ''}</div>`).join("")}
+      ${filled.map(done => `<div class="letter-slot ${done ? 'filled' : ''}">${done ? '★' : ''}</div>`).join("")}
     </div>
     ${state.team ? `<div class="team-name">Team ${escapeHtml(state.team)}</div>` : ""}
   `;
@@ -421,7 +431,9 @@ function attachSetup(){
     const val = document.getElementById("team-input").value.trim();
     if (!val) { document.getElementById("team-input").focus(); return; }
     if (!state.teamNumber) { return; }
-    state.team = val; save(); state.view = "map"; render();
+    state.team = val;
+    if (!state.startTime) state.startTime = Date.now();
+    save(); state.view = "map"; render();
   };
 }
 
@@ -475,7 +487,7 @@ function attachMap(){
     };
   });
   const toFinal = document.getElementById("to-final");
-  if (toFinal) toFinal.onclick = () => { state.view = "final"; render(); };
+  if (toFinal) toFinal.onclick = () => { state.view = "wordcheck"; state.wrongTries = 0; render(); };
 }
 
 function renderArrival(){
@@ -580,7 +592,7 @@ function renderStation(){
         <input type="text" id="answer-input" placeholder="Zahl eingeben" inputmode="numeric">
         <button class="btn" id="check-btn">Prüfen</button>
         <div class="feedback" id="feedback"></div>
-        ${state.wrongTries >= 2 ? `<div class="hint-box">💡 ${step.hint}</div>` : ""}
+        ${state.wrongTries >= 2 && step.hint ? `<div class="hint-box">💡 ${step.hint}</div>` : ""}
       `;
     }
   } else if (idx === actionIdx) {
@@ -745,12 +757,55 @@ function attachStation(){
   }
 }
 
+function renderWordCheck(){
+  return `
+    ${renderHeader()}
+    <button class="back-btn" id="back-btn">← Übersicht</button>
+    <div class="panel">
+      <div class="step-label">Finale</div>
+      <p class="riddle-text">Ihr habt an jeder Station einen Buchstaben gesammelt. Welches Wort ergeben sie zusammen?</p>
+      <input type="text" id="word-input" placeholder="Lösungswort eingeben" style="text-transform:uppercase;">
+      <button class="btn" id="word-check-btn">Prüfen</button>
+      <div class="feedback" id="feedback"></div>
+      ${state.wrongTries >= 2 ? `<div class="hint-box">💡 Schaut auf eure Buchstabenkärtchen von allen 5 Stationen und bringt sie in die richtige Reihenfolge.</div>` : ""}
+    </div>
+  `;
+}
+
+function attachWordCheck(){
+  const backBtn = document.getElementById("back-btn");
+  if (backBtn) backBtn.onclick = () => { state.view = "map"; render(); };
+
+  const btn = document.getElementById("word-check-btn");
+  const doCheck = () => {
+    const input = document.getElementById("word-input");
+    const val = normalize(input.value);
+    const fb = document.getElementById("feedback");
+    if (val === normalize(TARGET_WORD)) {
+      state.wrongTries = 0;
+      state.view = "final";
+      render();
+    } else {
+      state.wrongTries += 1;
+      fb.textContent = "Nicht ganz — versucht es nochmal!";
+      fb.className = "feedback err";
+      input.classList.add("shake");
+      setTimeout(() => input.classList.remove("shake"), 350);
+      if (state.wrongTries >= 2) render();
+    }
+  };
+  btn.onclick = doCheck;
+  document.getElementById("word-input").addEventListener("keydown", e => { if (e.key === "Enter") doCheck(); });
+}
+
 function renderFinal(){
+  const elapsed = state.startTime ? formatDuration(Date.now() - state.startTime) : null;
   return `
     <div class="final">
       <img src="${LOGO_DATA_URI}" class="flame-logo" alt="Kodokan Olsberg Logo">
       <h2>Das Wort lautet: ${TARGET_WORD}</h2>
       <p>Ihr habt alle fünf Stationen gemeistert und euch den Ippon geholt! Gut gemacht, Team ${escapeHtml(state.team)}!</p>
+      ${elapsed ? `<p style="color:var(--ember-2); font-weight:700; font-size:18px; margin-top:14px;">Eure Zeit: ${elapsed} Minuten</p>` : ""}
       <button class="btn" id="reset-btn" style="margin-top:20px;">Neu starten (anderes Team)</button>
     </div>
   `;
@@ -760,7 +815,8 @@ function resetApp(){
   localStorage.removeItem("feuer_team");
   localStorage.removeItem("feuer_team_number");
   localStorage.removeItem("feuer_progress");
-  state = { team: "", teamNumber: 0, progress: {}, view: "setup", currentStation: null, stepIndex: 1, wrongTries: 0 };
+  localStorage.removeItem("feuer_start_time");
+  state = { team: "", teamNumber: 0, progress: {}, startTime: null, view: "setup", currentStation: null, stepIndex: 1, wrongTries: 0 };
   render();
 }
 
