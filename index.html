@@ -200,12 +200,12 @@ const STATIONS = [
     icon: "🏐",
     name: "Beachvolleyballfeld",
     letter: "I",
-    lat: 51.559064, lng: 7.900377, radius: 30,
-    mapsQuery: "Beachvolleyballfeld Sportzentrum Werl",
-    hideA: "Kärtchen mit der Zahl 15 an einem Netzpfosten des Beachvolleyballfelds befestigen, oder knapp im Sand daneben eingraben.",
-    box: "Kleine Kiste mit Zahlenschloss am Beachvolleyballfeld bereitstellen. Schloss auf Code 1527 einstellen. Inhalt: Buchstabenkärtchen „I“ (+ optional Süßigkeit).",
+    lat: 51.55814, lng: 7.89937, radius: 35,
+    mapsQuery: "Waldweg am Sportzentrum Werl",
+    hideA: "Kärtchen mit der Zahl 15 an einem Baum im Waldstück befestigen, kurz nachdem der kleine Waldweg beginnt (Nagel/Schnur/Klebeband, je nachdem was am Baum hält).",
+    box: "Kleine Kiste mit Zahlenschloss im Waldstück am Waldweg bereitstellen (in der Nähe des Baumes mit der Zahl). Schloss auf Code 1527 einstellen. Inhalt: Buchstabenkärtchen „I“ (+ optional Süßigkeit).",
     steps: [
-      { type: "find", text: "Mitten im Sand steht ein Netz, gehalten von zwei stillen Pfosten. Sucht an einem von ihnen nach einer Zahl, die dort klebt.", answer: "15", hint: "Schaut euch die Pfosten an, die das Netz auf dem Beachvolleyballfeld halten." },
+      { type: "find", text: "Wo der feste Boden endet und ein schmaler Pfad sich zwischen die Stämme schlängelt, steht einer von ihnen ein Stück abseits vom Weg — breiter als seine Nachbarn. An seiner Rinde, nicht zu hoch und nicht zu tief, hängt eine Zahl.", answer: "15", hint: "Geht den kleinen Waldweg hinein und schaut euch die Bäume am Wegesrand genau an." },
       { type: "riddle", text: "Emoji-Gleichungen: 🌊 + 🌊 = 10, 🏐 + 🌊 = 12, ☀️ − 🏐 = 3, 🐚 + ☀️ = 15. Wie viel ergibt 🏐 + 🌊 + ☀️ + 🐚 zusammen?", answer: "27", hint: "Aus der ersten Gleichung: 🌊 = 5. Damit findet ihr in der zweiten 🏐 = 7. Setzt das in die dritte ein für ☀️, dann in die vierte für 🐚." },
       { type: "combine", text: "Stellt eure beiden Zahlen hintereinander — zuerst die kleinere, dann die größere. So entsteht der vierstellige Code für das Schloss.", answer: "1527", hint: "15 ist kleiner als 27. Schreibt also erst 15, dann 27 dahinter." }
     ]
@@ -220,7 +220,7 @@ const STATIONS = [
     hideA: "Kärtchen mit der Zahl 42 am Fuß einer Laterne oder eines Schilderpfostens auf dem Parkplatz befestigen.",
     box: "Kleine Kiste mit Zahlenschloss auf dem Parkplatz bereitstellen. Schloss auf Code 1842 einstellen. Inhalt: Buchstabenkärtchen „P“ (+ optional Süßigkeit).",
     steps: [
-      { type: "find", text: "Am Rand des Parkplatzes steht ein hoher Pfahl, der abends den Weg erleuchtet. Sucht an seinem Fuß nach einer Zahl.", answer: "42", hint: "Sucht am Fuß einer Laterne oder eines Schildmastes auf dem Parkplatz." },
+      { type: "find", text: "Ich schlafe bei Tag und wache in der Nacht, halte kein Feuer in der Hand und leuchte doch weit über den Asphalt. Am Fuß meines einzigen Beins, dort wo ich aus dem Boden wachse, liegt eine Zahl verborgen.", answer: "42", hint: "Sucht am Fuß einer Laterne oder eines Schildmastes auf dem Parkplatz." },
       { type: "riddle", text: "Autos brauchen sie zum Fahren — Reifen. Im Alphabet hat jeder Buchstabe seine feste Zahl: A ist 1, B ist 2, C ist 3 … Welche Zahl gehört zum ersten Buchstaben von „Reifen“?", answer: "18", hint: "A=1, B=2 … zählt weiter, bis ihr beim Buchstaben R ankommt." },
       { type: "combine", text: "Stellt eure beiden Zahlen hintereinander — zuerst die kleinere, dann die größere. So entsteht der vierstellige Code für das Schloss.", answer: "1842", hint: "18 ist kleiner als 42. Schreibt also erst 18, dann 42 dahinter." }
     ]
@@ -246,11 +246,12 @@ const STATIONS = [
     lat: 51.558621, lng: 7.901115, radius: 30,
     mapsQuery: "Vereinsheim Sportzentrum Werl",
     hideA: "Kärtchen mit der Zahl 50 neben der Eingangstür des Vereinsheims befestigen, z. B. am Klingelschild.",
-    box: "Kleine Kiste mit Zahlenschloss am Vereinsheim bereitstellen. Schloss auf Code 2350 einstellen. Inhalt: Buchstabenkärtchen „O“ (+ optional Süßigkeit).",
+    box: "Kleine Kiste mit Zahlenschloss in der Nähe des Zeltes des Lieblingstrainers/der Lieblingstrainerin verstecken (nicht direkt am Vereinsheim). Schloss auf Code 2350 einstellen. Inhalt: Buchstabenkärtchen „O“ (+ optional Süßigkeit).",
     steps: [
-      { type: "find", text: "Wo man sich nach dem Training aufwärmt und der Kaffee schon duftet, hängt neben der Tür ein Schild mit einer Zahl.", answer: "50", hint: "Schaut euch den Eingangsbereich des Vereinsheims genau an, z. B. neben der Tür oder am Klingelschild." },
+      { type: "find", text: "Wo Schweiß zu Stolz wird und Müdigkeit sich in ein Lächeln verwandelt, liegt eine Schwelle, die täglich viele Male überquert wird. Neben ihr, dort wo ein Knopf die Stille durchbricht, wartet eine Zahl.", answer: "50", hint: "Schaut euch den Eingangsbereich des Vereinsheims genau an, z. B. neben der Tür oder am Klingelschild." },
       { type: "riddle", text: "Vor euch liegen 4 bunte Teller mit Bällen und 3 farbige Stoffbänder. Rot: 6 Bälle, Gelb: 9 Bälle, Grün: 8 Bälle, Blau: 7 Bälle. Nur die Teller, zu deren Farbe es auch ein passendes Stoffband gibt, zählen mit. Wie viele Bälle zählen zusammen?", answer: "23", hint: "Es gibt vier Teller, aber nur drei Bänder. Ein Teller hat keine passende Farbe und zählt nicht mit." },
-      { type: "combine", text: "Stellt eure beiden Zahlen hintereinander — zuerst die kleinere, dann die größere. So entsteht der vierstellige Code für das Schloss.", answer: "2350", hint: "23 ist kleiner als 50. Schreibt also erst 23, dann 50 dahinter." }
+      { type: "combine", text: "Stellt eure beiden Zahlen hintereinander — zuerst die kleinere, dann die größere. So entsteht der vierstellige Code für das Schloss.", answer: "2350", hint: "23 ist kleiner als 50. Schreibt also erst 23, dann 50 dahinter." },
+      { type: "info", text: "Wer euch das Fallen lehrt, damit ihr immer wieder sicher aufsteht, hat irgendwo auf diesem Gelände sein Zelt aufgeschlagen. Findet das Zelt eures Lieblingstrainers oder eurer Lieblingstrainerin — ganz in der Nähe wartet die Kiste mit dem Zahlenschloss auf euch." }
     ]
   },
   {
@@ -264,8 +265,10 @@ const STATIONS = [
     timerSeconds: 300,
     taskText: "Bildet nacheinander mit euren Körpern die Buchstaben des Wortes KODOKAN auf dem Boden — erst legt sich das ganze Team zu einem K, dann zu einem O, dann D, O, K, A, N. Ihr habt dafür 5 Minuten Zeit. Ruft eure Betreuerin/euren Betreuer, sobald ihr fertig seid.",
     confirmLabel: "Schlüssel erhalten ✓",
-    box: "Kleine Kiste mit Vorhängeschloss (Schlüssel) im Stadion bereitstellen. Inhalt: Buchstabenkärtchen „N“ (+ optional Süßigkeit). Der Betreuer behält den Schlüssel und übergibt ihn erst, wenn das Team alle 7 Buchstaben von KODOKAN erfolgreich gelegt hat (innerhalb der 5 Minuten, nach Ermessen des Betreuers).",
-    steps: []
+    box: "Kiste (Vorhängeschloss mit Schlüssel) direkt an einem Mülleimer im Stadion platzieren/befestigen. Inhalt: Buchstabenkärtchen „N“ (+ optional Süßigkeit). Der Betreuer behält den Schlüssel und übergibt ihn erst, wenn das Team alle 7 Buchstaben von KODOKAN erfolgreich gelegt hat (innerhalb der 5 Minuten, nach Ermessen des Betreuers).",
+    steps: [
+      { type: "info", text: "Ich schlucke, was ihr nicht mehr braucht, stehe treu am Rand der Bahn und werde nie satt, egal wie viel man mir gibt. Dort, wo ich stehe, wartet eure Kiste auf euch." }
+    ]
   }
 ];
 
@@ -561,15 +564,23 @@ function renderStation(){
 
   if (idx >= 1 && idx <= totalInputSteps) {
     const step = st.steps[idx - 1];
-    const labelByType = { find: "Findet den Code", riddle: "Löst das Rätsel", combine: "Baut den Schloss-Code" };
-    body = `
-      <div class="step-label">Schritt ${idx} von ${totalInputSteps + 1} · ${labelByType[step.type] || 'Weiter'}</div>
-      <p class="riddle-text">${step.text}</p>
-      <input type="text" id="answer-input" placeholder="Zahl eingeben" inputmode="numeric">
-      <button class="btn" id="check-btn">Prüfen</button>
-      <div class="feedback" id="feedback"></div>
-      ${state.wrongTries >= 2 ? `<div class="hint-box">💡 ${step.hint}</div>` : ""}
-    `;
+    if (step.type === "info") {
+      body = `
+        <div class="step-label">Hinweis</div>
+        <p class="riddle-text">${step.text}</p>
+        <button class="btn" id="info-next-btn">Weiter</button>
+      `;
+    } else {
+      const labelByType = { find: "Findet den Code", riddle: "Löst das Rätsel", combine: "Baut den Schloss-Code" };
+      body = `
+        <div class="step-label">Schritt ${idx} von ${totalInputSteps + 1} · ${labelByType[step.type] || 'Weiter'}</div>
+        <p class="riddle-text">${step.text}</p>
+        <input type="text" id="answer-input" placeholder="Zahl eingeben" inputmode="numeric">
+        <button class="btn" id="check-btn">Prüfen</button>
+        <div class="feedback" id="feedback"></div>
+        ${state.wrongTries >= 2 ? `<div class="hint-box">💡 ${step.hint}</div>` : ""}
+      `;
+    }
   } else if (idx === actionIdx) {
     if (st.challengeType === "key") {
       body = `
@@ -582,7 +593,7 @@ function renderStation(){
         <button class="btn" id="confirm-btn" style="margin-top:14px;">${st.confirmLabel}</button>
       `;
     } else {
-      const code = st.steps[st.steps.length - 1].answer;
+      const code = st.steps.find(s => s.type === "combine").answer;
       body = `
         <div class="step-label">Schritt ${idx} von ${totalInputSteps + 1} · Zahlenschloss öffnen</div>
         <p class="riddle-text">Euer Code lautet <strong style="color:var(--ember-2); letter-spacing:2px;">${code}</strong>. Stellt diese Zahl am Zahlenschloss eurer Kiste ein und öffnet sie — der Buchstabe wartet drinnen!</p>
@@ -626,6 +637,14 @@ function attachStation(){
     state.progress[state.currentStation.id] = { done: true };
     save();
     state.view = "map";
+    render();
+  };
+
+  const infoNextBtn = document.getElementById("info-next-btn");
+  if (infoNextBtn) infoNextBtn.onclick = () => {
+    state.stepIndex += 1;
+    state.progress[state.currentStation.id] = { done: false, stepIndex: state.stepIndex };
+    save();
     render();
   };
 
@@ -819,6 +838,7 @@ function showLeaderSheet(){
       <hr style='border:none;border-top:1px solid rgba(255,255,255,0.08);margin:16px 0;'>
       ${STATIONS.map(s => s.challengeType === "key" ? `
         <h3>${s.icon} ${s.name} — Buchstabe ${s.letter} (🔑 Schlüssel-Challenge)</h3>
+        ${s.steps.filter(st => st.type === "info").map(st => `<div class="kv">Hinweis-Rätsel:</div> ${st.text}<br>`).join("")}
         <div class="kv">Team-Aufgabe:</div> ${s.taskText}<br>
         ${s.timerSeconds ? `<div class="kv">Zeitlimit:</div> ${Math.round(s.timerSeconds / 60)} Minuten (Timer in der App, Team startet ihn selbst)<br>` : ""}
         <div class="kv">Kiste/Schloss:</div> ${s.box}
@@ -827,7 +847,8 @@ function showLeaderSheet(){
         <div class="kv">Versteck (Code A):</div> ${s.hideA}<br>
         <div class="kv">Kopfrätsel (Code B):</div> ${s.steps[1].text} <span class="kv">→ Lösung:</span> <code>${s.steps[1].answer}</code><br>
         <div class="kv">Codes der Reihe nach:</div>
-        ${s.steps.map(st => `<code>${st.answer}</code>`).join(" · ")}<br>
+        ${s.steps.filter(st => st.answer !== undefined).map(st => `<code>${st.answer}</code>`).join(" · ")}<br>
+        ${s.steps.filter(st => st.type === "info").map(st => `<div class="kv">Zusätzlicher Hinweis:</div> ${st.text}<br>`).join("")}
         <div class="kv">Kiste/Schloss:</div> ${s.box}
       `).join("<hr style='border:none;border-top:1px solid rgba(255,255,255,0.08);margin:14px 0;'>")}
       <button class="btn secondary" id="close-leader" style="margin-top:18px;">Zurück zur App</button>
